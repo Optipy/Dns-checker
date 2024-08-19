@@ -1,20 +1,28 @@
 #!/bin/bash
 
-# درخواست آدرس DNS از کاربر
-read -p "لطفا آدرس DNS خود را وارد کنید: " dns_address
+# Request DNS address from user
+read -p "Please enter the DNS address: " dns_address
 
-# بررسی DNS با استفاده از dig
-echo "در حال بررسی آدرس DNS..."
+# Check DNS using dig
+echo "Checking DNS address..."
 dig_output=$(dig @$dns_address google.com)
 
-# نمایش نتایج
+# Display results
 if echo "$dig_output" | grep -q "ANSWER SECTION"; then
-    echo "آدرس DNS معتبر است."
-    # استخراج اطلاعات از dig_output
+    echo "The DNS address is valid."
+    
+    # Extract information from dig_output
     response_time=$(echo "$dig_output" | grep "Query time" | awk '{print $4}')
     server_ip=$(echo "$dig_output" | grep "SERVER:" | awk '{print $2}')
-    echo "زمان پاسخ‌دهی: ${response_time} ms"
-    echo "آدرس آی‌پی سرور: ${server_ip}"
+    
+    # Display response time and server IP
+    echo "Response time: ${response_time} ms"
+    echo "Server IP address: ${server_ip}"
+    
+    # Determine the country of the DNS server
+    echo "Determining the country of the DNS server..."
+    country=$(curl -s ipinfo.io/${server_ip}/country)
+    echo "Country of the DNS server: ${country}"
 else
-    echo "آدرس DNS نامعتبر است یا مشکلی در ارتباط وجود دارد."
+    echo "The DNS address is invalid or there is a problem with the connection."
 fi
