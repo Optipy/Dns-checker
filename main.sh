@@ -21,7 +21,7 @@ if echo "$dig_output" | grep -q "ANSWER SECTION"; then
     
     # Determine the country of the DNS server
     echo "Determining the country of the DNS server..."
-    country=$(curl -s ipinfo.io/${server_ip}/country)
+    country=$(curl -s http://ip-api.com/json/${server_ip} | jq -r '.country')
     echo "Country of the DNS server: ${country}"
 else
     echo "The DNS address is invalid or there is a problem with the connection."
